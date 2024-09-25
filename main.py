@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import ttk
+from view import *
+from tkinter import messagebox
 
 # colours
 white = "#ffffff"
@@ -19,8 +21,8 @@ frame_up.grid(row=0, column=0, padx=0, pady=1)
 frame_down = Frame(window, width=700, height=200, bg=white)
 frame_down.grid(row=1, column=0, padx=0, pady=1)
 
-frame_table = Frame(window, width=700, bg=blue)
-frame_table.grid(row=2, column=0, columnspan=2, padx=0, pady=1, sticky=NW)
+frame_table = Frame(window, width=700, bg=white, relief="flat")
+frame_table.grid(row=2, column=0, columnspan=2, padx=10, pady=1, sticky=NW)
 # this divides the window into 3. You might not notice because the bg of some were white
 
 window.grid_rowconfigure(2, weight=1)
@@ -31,7 +33,11 @@ window.grid_columnconfigure(0, weight=1)
 def show():
     global tree
     list_header = ["Name", "Gender", "Telephone", "Email"]
+
+    demo_list = viewer()
+
     tree = ttk.Treeview(frame_table, selectmode="extended", columns=list_header, show='headings')
+
     vsb = ttk.Scrollbar(frame_table, orient="vertical", command=tree.yview)
     # vsb stands for vertical scrollbar
     hsb = ttk.Scrollbar(frame_table, orient="horizontal", command=tree.xview)
@@ -58,13 +64,36 @@ def show():
     tree.column(2, width=150, anchor='nw')
     tree.column(3, width=150, anchor='nw')
 
+    for item in demo_list:
+        tree.insert('', 'end', values=item)
 
 
 
 show()
 
+def insert():
+    Name = e_name.get()
+    Gender = c_gender.get()
+    Telephone = e_telephone.get()
+    Email = e_email.get()
+
+    data = [Name, Gender, Telephone, Email]
+
+    if Name == '' or Gender == '' or Telephone == '' or Email == '':
+        messagebox.showwarning('data','Please fill in all fields')
+    else:
+        add(data)
+        messagebox.showinfo('data','Data added successfully')
+
+        e_name.delete(0,'end')
+        c_gender.delete(0, 'end')
+        e_telephone.delete(0, 'end')
+        e_email.delete(0, 'end')
+
+        show()
 # Adjust the grid configuration of frame_table to fill the entire space
 frame_table.grid(row=2, column=0, sticky="nsew")
+
 
 # Configure the treeview to fill the entire frame_table
 tree.grid(row=0, column=0, sticky="nsew")
@@ -110,7 +139,7 @@ e_search.place(x=500, y=15)  # creating an entry for search
 b_view = Button(frame_down, text="View", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white)
 b_view.place(x=400, y=52)  # creating a view button
 
-b_add = Button(frame_down, text="Add", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white)
+b_add = Button(frame_down, text="Add", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white, command=insert)
 b_add.place(x=550, y=52)  # creating an add button
 
 b_update = Button(frame_down, text="Update", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white)
