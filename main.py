@@ -141,8 +141,32 @@ tree.grid(row=0, column=0, sticky="nsew")
 tree.rowconfigure(0, weight=1)
 tree.columnconfigure(0, weight=1)
 
+def to_remove():
+    try:
+        tree_data = tree.focus()  # gets data that user selects
+        tree_dictionary = tree.item(tree_data)
+        tree_list = tree_dictionary['values']
+        tree_telephone = str(tree_list[2])
 
+        remove(tree_telephone)
+        messagebox.showinfo('success', "Data has been deleted successfully")
 
+        for widget in frame_table.winfo_children():
+            widget.destroy()  # destroying old data to show updated version
+        show()
+    except IndexError:
+        messagebox.showerror('Error', 'Select one of them from the table')
+
+def to_search():
+    telephone = e_search.get()
+    data = search(telephone)
+
+    def delete_command():
+        tree.delete(*tree.get_children())
+    delete_command()
+    for item in data:
+        tree.insert('','end',values=item)
+    e_search.delete(0,'end')
 # frame_up widgets
 app_name = Label(frame_up, text="My Contacts", height=1, font=('Courier 17 bold'), bg=blue, fg=white)
 app_name.place(x=5, y=5)
@@ -172,12 +196,12 @@ e_email = Entry(frame_down, justify='left', highlightthickness=1, width=25, reli
 # your name would be entered
 e_email.place(x=100, y=122)
 
-b_search = Button(frame_down, text="Search", height=1, bg=blue, font=('Ivy 8 bold'), fg=white)
+b_search = Button(frame_down, text="Search", height=1, bg=blue, font=('Ivy 8 bold'), fg=white,command=to_search)
 b_search.place(x=400, y=15)  # creating a search button
 e_search = Entry(frame_down, width=16, justify="left", font=("Ivy 11"), highlightthickness=1, relief="solid")
 e_search.place(x=500, y=15)  # creating an entry for search
 
-b_view = Button(frame_down, text="View", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white)
+b_view = Button(frame_down, text="View", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white,command=show)
 b_view.place(x=400, y=52)  # creating a view button
 
 b_add = Button(frame_down, text="Add", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white, command=insert)
@@ -186,7 +210,7 @@ b_add.place(x=550, y=52)  # creating an add button
 b_update = Button(frame_down, text="Update", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white, command=to_update)
 b_update.place(x=550, y=90)  # creating an update button
 
-b_delete = Button(frame_down, text="Delete", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white)
+b_delete = Button(frame_down, text="Delete", width=10, height=1, bg=blue, font=('Ivy 8 bold'), fg=white, command= to_remove)
 b_delete.place(x=550, y=126)  # creating a delete button
 
 window.mainloop()
